@@ -15,41 +15,6 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
-#img_input {
-  position: relative;
-  display: none;
-}
-.bl::before {
-  position: absolute;
-  content: "";
-  left: 5px;
-  top: 4px;
-  border-radius: 15px;
-  width: calc(100% - 10px);
-  height: 46%;
-  background: rgba(255, 255, 255, 0.2);
-}
-#upload_imagge {
-  position: relative;
-  height: 60px;
-}
-#upload_imagge p {
-  position: relative;
-  padding: 8px 40px;
-  background: #00ffdd;
-  border-bottom: solid 6px #00bbff;
-  margin-bottom: 20px;
-
-  font-weight: 900;
-  font-size: 1.2rem;
-  border-radius: 20px;
-  box-shadow: 0 0 10px #000;
-  transition: linear 0.1s;
-}
-#upload_imagge.active p {
-  font-size: 1.1rem;
-  box-shadow: 0 0 5px #000;
-}
 :root {
   --width: 300px;
   --height: 300px;
@@ -59,11 +24,13 @@ body {
   --sb: 25px;
 }
 #s_contaner {
+  margin: 25px 0;
   position: relative;
   width: var(--width);
   height: var(--height);
   background: #999;
   overflow: hidden;
+  display: none;
   background-repeat: no-repeat;
   background-position: center;
   box-shadow: 0 0 8px #000;
@@ -164,6 +131,39 @@ body {
   border-color: transparent transparent #fff #fff;
   cursor: nesw-resize;
 }
+#img_input {
+  position: relative;
+  display: none;
+}
+.bl::before {
+  position: absolute;
+  content: "";
+  left: 5px;
+  top: 4px;
+  border-radius: 15px;
+  width: calc(100% - 10px);
+  height: 46%;
+  background: rgba(255, 255, 255, 0.2);
+}
+#upload_imagge {
+  position: relative;
+  height: auto;
+}
+#upload_imagge p {
+  position: relative;
+  padding: 8px 40px;
+  background: #00ffdd;
+  border-bottom: solid 6px #00bbff;
+  font-weight: 900;
+  font-size: 1.2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 10px #000;
+  transition: linear 0.1s;
+}
+#upload_imagge.active p {
+  font-size: 1.1rem;
+  box-shadow: 0 0 5px #000;
+}
 #crap_btn {
   position: relative;
   width: 100%;
@@ -178,7 +178,8 @@ body {
   font-size: 1.2rem;
   border-radius: 15px;
   background: blue;
-  padding: 8px 30px;
+  padding: 8px;
+  text-align: center;
   color: #fff;
   box-shadow: 0 0 8px #000;
   border-bottom: 5px solid #260080;
@@ -216,6 +217,7 @@ body {
   transition: linear 0.3s;
   color: #fff;
   font-weight: 900;
+  z-index: 5;
 }
 #preview #close.active {
   transform: rotate(405deg);
@@ -306,6 +308,12 @@ body {
   border: solid 2px #6f00af;
   box-shadow: 1px 1px 8px;
 }
+#set_size::before{
+ border-radius: 5px;
+ left: 1px;
+ top: 1px;
+ width: calc(100% - 2px);
+}
 #file_size_text{
   position: relative;
   width: 80px;
@@ -343,4 +351,40 @@ body {
   height: 30px;
   padding-bottom: 3px;
   font-weight: 900;
+}
+#intre_window{
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background: #fff;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: aniFullScreen linear 2s infinite;
+}
+#intre_window p{
+  background: #fff;
+  box-shadow: 0 0 15px #fff;
+  width: 90%;
+  border-radius: 50px;
+  padding: 10px 30px;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+}
+@keyframes aniFullScreen {
+  0%{
+    background: #fff;
+  }50%{
+    background: #ffffff77;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  body{
+    overflow-y: scroll;
+  }
 }
