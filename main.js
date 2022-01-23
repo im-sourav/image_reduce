@@ -35,6 +35,9 @@ imgSizeInput.addEventListener("keyup", (e) => {
   }
   inkb = Number(imgSizeInput.value);
 });
+sSelector.addEventListener("click", () => {
+  fullScreen();
+})
 
 upload_imagge.addEventListener("click", () => imgInput.click());
 hover(upload_imagge);
