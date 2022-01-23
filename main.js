@@ -57,10 +57,10 @@ function hover(element) {
 
 // set sides css propatys
 function cssSides() {
-  s.left = `${sids.l}px`;
-  s.bottom = `${sids.b}px`;
-  s.right = `${sids.r}px`;
-  s.top = `${sids.t}px`;
+  root.style.setProperty("--sl", `${sids.l}px`);
+  root.style.setProperty("--sr", `${sids.r}px`);
+  root.style.setProperty("--st", `${sids.t}px`);
+  root.style.setProperty("--sb", `${sids.b}px`);
 }
 let $$cvs = document.createElement("canvas");
 let $$ctx = $$cvs.getContext("2d");

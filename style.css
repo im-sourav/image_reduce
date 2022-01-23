@@ -53,6 +53,10 @@ body {
 :root {
   --width: 300px;
   --height: 300px;
+  --sl: 25px;
+  --sr: 25px;
+  --st: 25px;
+  --sb: 25px;
 }
 #s_contaner {
   position: relative;
@@ -91,10 +95,10 @@ body {
 #selector {
   position: absolute;
   border: solid 2px #00a6ffaa;
-  left: 25px;
-  top: 25px;
-  bottom: 25px;
-  right: 25px;
+  left: var(--sl);
+  top: var(--st);
+  bottom: var(--sb);
+  right: var(--sr);
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
