@@ -27,10 +27,9 @@ let inkb = 512;
 
 // set inkb value
 imgSizeInput.addEventListener("keyup", (e) => {
-  if(!imgSizeInput.value || 0 >= imgSizeInput.value) return;
+  if (!imgSizeInput.value || 0 >= imgSizeInput.value) return;
   inkb = Number(imgSizeInput.value);
-})
-
+});
 
 upload_imagge.addEventListener("click", () => imgInput.click());
 hover(upload_imagge);
@@ -221,9 +220,9 @@ imgInput.addEventListener("change", (e) => {
       imgResize.style.backgroundImage = `url(${maekImgPerfectSize()})`;
 
       downloadBtn.addEventListener("click", () => {
-        if(window.navigator.msSaveBlob){
+        if (window.navigator.msSaveBlob) {
           window.navigator.msSaveBlob($$cvs.msToBlob(), "your-image.png");
-        }else{
+        } else {
           const a = document.createElement("a");
           document.body.appendChild(a);
           a.href = $$cvs.toDataURL();
@@ -231,7 +230,7 @@ imgInput.addEventListener("change", (e) => {
           a.click();
           document.body.removeChild(a);
         }
-      })
+      });
     });
   };
 });
@@ -244,4 +243,21 @@ pvuBtn.addEventListener("click", () => {
 });
 closeBtn.addEventListener("click", () => {
   preview.style.display = "none";
+});
+
+// full sereen mood
+function getFullScreen() {
+  return (
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullscreenElement ||
+    document.msFullscreenElement
+  );
+}
+
+document.body.addEventListener("click", () => {
+  if(getFullScreen())return;
+  if (!getFullScreen()) {
+    document.documentElement.requestFullscreen();
+  }
 });
