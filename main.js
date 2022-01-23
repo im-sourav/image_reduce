@@ -163,8 +163,6 @@ let ratio = 0,
 
 imgInput.addEventListener("change", (e) => {
   if (!e.target.files[0]) return;
-  sSelector.style.display = "flex";
-  fullScreen();
   sids = {
     r: 25,
     l: 25,
@@ -177,11 +175,13 @@ imgInput.addEventListener("change", (e) => {
   let Img = URL.createObjectURL(e.target.files[0]);
   img.src = Img;
   img.onload = () => {
+    sSelector.style.display = "flex";
+    fullScreen();
     let scale = selectWidth / img.width;
     let w = img.width,
-      h = img.height,
-      ss = sSelector.style;
-
+    h = img.height,
+    ss = sSelector.style;
+    
     if (h > w) {
       ratio = h / minSize;
       nsize = w / ratio;
