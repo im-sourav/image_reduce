@@ -1,4 +1,3 @@
-const intreWindow = document.getElementById("intre_window");
 const sSelector = document.getElementById("s_contaner");
 const selector = document.getElementById("selector");
 const corner = document.querySelectorAll(".corner");
@@ -6,6 +5,7 @@ const imgInput = document.getElementById("img_input");
 const preview = document.getElementById("preview");
 const closeBtn = document.getElementById("close");
 const imgResize = document.getElementById("img_resize");
+const selectionBtn = document.getElementById("selection_btn");
 const imgSizeInput = document.getElementById("img_size_input");
 const pvuBtn = document.getElementById("pvu_btn");
 const downloadBtn = document.getElementById("download_btn");
@@ -22,10 +22,18 @@ root.style.setProperty("--width", `${minSize}px`);
 root.style.setProperty("--height", `${minSize}px`);
 
 /*----------------------------------------------------*/
-
+let $$cvs = document.createElement("canvas");
+let $$ctx = $$cvs.getContext("2d");
+let sids = {
+  r: 25,
+  l: 25,
+  t: 25,
+  b: 25,
+};
 let selectWidth = 100;
 let inkb = 512;
 let squir = false;
+let margin, w, h;
 
 // set inkb value
 imgSizeInput.addEventListener("keyup", (e) => {
@@ -35,8 +43,31 @@ imgSizeInput.addEventListener("keyup", (e) => {
   }
   inkb = Number(imgSizeInput.value);
 });
-sSelector.addEventListener("click", () => {
-  fullScreen();
+selectionBtn.addEventListener("click", () => {
+  if(!squir){
+    selectionBtn.classList.add("active");
+    if(margin){
+      if (h > w) {
+          sids.t = 25 + margin;
+          sids.b = 25 + margin;
+          sids.l = 25;
+          sids.r = 25;
+      } else {
+          sids.l = 25 + margin;
+          sids.r = 25 + margin;
+          sids.t = 25;
+          sids.b = 25;
+      }
+      cssSides();
+    }
+  }else{
+    selectionBtn.classList.remove("active");
+    for (const ele in sids) {
+      sids[ele] = 25;
+    }
+    cssSides();
+  }
+  squir = squir ? false : true;
 })
 
 upload_imagge.addEventListener("click", () => imgInput.click());
@@ -69,14 +100,7 @@ function cssSides() {
   root.style.setProperty("--st", `${sids.t}px`);
   root.style.setProperty("--sb", `${sids.b}px`);
 }
-let $$cvs = document.createElement("canvas");
-let $$ctx = $$cvs.getContext("2d");
-let sids = {
-  r: 25,
-  l: 25,
-  t: 25,
-  b: 25,
-};
+
 
 const cnr = [selector, corner[0], corner[1], corner[2], corner[3]];
 let isCorner = false;
@@ -179,11 +203,9 @@ imgInput.addEventListener("change", (e) => {
   img.src = Img;
   img.onload = () => {
     sSelector.style.display = "flex";
-    fullScreen();
-    let scale = selectWidth / img.width;
-    let w = img.width,
-    h = img.height,
-    ss = sSelector.style;
+    let ss = sSelector.style;
+    w = img.width;
+    h = img.height;
     
     if (h > w) {
       ratio = h / minSize;
@@ -191,7 +213,7 @@ imgInput.addEventListener("change", (e) => {
       ss.backgroundSize = `${nsize}px ${minSize}px`;
       ss.width = `${nsize}px`;
       ss.height = `${minSize}px`;
-      let margin = Math.floor(minSize - nsize) / 2;
+      margin = Math.floor(minSize - nsize) / 2;
       if (squir) {
         sids.t = 25 + margin;
         sids.b = 25 + margin;
@@ -204,7 +226,7 @@ imgInput.addEventListener("change", (e) => {
       ss.backgroundSize = `${minSize}px ${nsize}px`;
       ss.width = `${minSize}px`;
       ss.height = `${nsize}px`;
-      let margin = Math.floor(minSize - nsize) / 2;
+      margin = Math.floor(minSize - nsize) / 2;
       if (squir) {
         sids.l = 25 + margin;
         sids.r = 25 + margin;
@@ -295,29 +317,27 @@ pvuBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
   preview.style.display = "none";
 });
-
-// full sereen mood
-function getFullScreen() {
-  return (
-    document.fullscreenElement ||
-    document.webkitFullscreenElement ||
-    document.mozFullscreenElement ||
-    document.msFullscreenElement
-  );
-}
-
-document.body.addEventListener("click", () => {});
-
-intreWindow.addEventListener("click", () => {
+imgInput.addEventListener("change", () => {
   fullScreen();
-  intreWindow.style.display = "none";
-});
 
-function fullScreen() {
-  if (getFullScreen()) return;
-  if (!getFullScreen()) {
-    document.documentElement
-      .requestFullscreen()
-      .catch(console.log());
+})
+// full sereen mood
+  sSelector.addEventListener("touchstart", () => {
+  })
+  function getFullScreen() {
+    return (
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.mozFullscreenElement ||
+      document.msFullscreenElement
+    );
   }
-}
+  function fullScreen() {
+    if (getFullScreen()) return;
+    if (!getFullScreen()) {
+      document.documentElement
+        .requestFullscreen()
+        .catch(console.log());
+    }
+  }
+

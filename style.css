@@ -164,37 +164,6 @@ body {
   font-size: 1.1rem;
   box-shadow: 0 0 5px #000;
 }
-#crap_btn {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-#crap_btn p {
-  position: relative;
-  width: 130px;
-  font-size: 1.2rem;
-  border-radius: 15px;
-  background: blue;
-  padding: 8px;
-  text-align: center;
-  color: #fff;
-  box-shadow: 0 0 8px #000;
-  border-bottom: 5px solid #260080;
-  font-weight: 900;
-  transition: linear 0.1s;
-}
-#crap_btn p::before {
-  height: 40%;
-  background: rgba(255, 255, 255, 0.07);
-}
-#crap_btn.active p {
-  font-size: 1.1rem;
-  box-shadow: 0 0 3px #000;
-}
-
 #preview {
   position: fixed;
   display: none;
@@ -221,31 +190,6 @@ body {
 }
 #preview #close.active {
   transform: rotate(405deg);
-}
-#pvu_btn {
-  position: relative;
-  height: 60px;
-  margin-top: 10px;
-}
-#pvu_btn p {
-  font-size: 1.2rem;
-  border-radius: 50px;
-  background: #00ff00;
-  padding: 8px 20px;
-  color: #fff;
-  box-shadow: 0 0 8px #000;
-  border-bottom: 5px solid #00801a;
-  font-weight: 900;
-  transition: linear 0.1s;
-}
-#pvu_btn p::before {
-  top: 2px;
-  border-radius: 35px;
-  height: 36%;
-}
-#pvu_btn.active p {
-  font-size: 1.1rem;
-  box-shadow: 0 0 3px #000;
 }
 #download_btn {
   position: absolute;
@@ -279,19 +223,75 @@ body {
   font-size: 1.1rem;
   box-shadow: 0 0 3px #000;
 }
-#size_crop_button {
+/* ------------- file size and img selection ------------ */
+#size_img_selection_button {
   position: relative;
-  display: grid;
-  height: 70px;
+  display: flex;
+  height: 80px;
   width: 100%;
   justify-content: center;
   align-items: center;
-  grid-template-columns: 6fr 4fr;
 }
-#size_crop_button .sst{
+#img_selection{
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 120px;
+  height: 52px;
+  border-radius: 5px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-weight: 900;
+  background: #a200ff;
+  border: solid 2px #6f00af;
+  box-shadow: 1px 1px 8px #000;
+  overflow: hidden;
+}
+#selection_btn{
+  width: 60px;
+  height: 20px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  border-radius: 100px;
+  border: 1px solid #3c005f;
+  box-shadow: inset 0 0 3px #000;
+  transition: ease-in-out 0.2s;
+  z-index: 5;
+}
+#selection_btn.active{
+  background: #ff0;
+  justify-content: end;
+}
+#img_selection::before{
+  border-radius: 5px;
+  left: auto;
+  top: auto;
+  width: calc(100% - 2px);
+  height: 42%;
+}
+#selection_btn .dot{
+  position: relative;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #fff;
+  border-radius: 100px;
+  box-shadow: inset 0 0 3px #fff;
+  background: #520182;
+  transition: linear 0.4s;
+}
+#selection_btn.active .dot{
+  border: 2px solid #ff0;
+  box-shadow: inset 0 0 3px #ff0;
+  transition: linear 0.4s;
+}
+
+#size_img_selection_button .sst{
+  position: relative;
+  width: 190px;
+  height: 65px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -306,7 +306,7 @@ body {
   align-items: center;
   background: #a200ff;
   border: solid 2px #6f00af;
-  box-shadow: 1px 1px 8px;
+  box-shadow: 1px 1px 8px #000;
 }
 #set_size::before{
  border-radius: 5px;
@@ -349,31 +349,8 @@ body {
   align-items: center;
   width: 30px;
   height: 30px;
-  padding-bottom: 3px;
+  padding-bottom: 2px;
   font-weight: 900;
-}
-#intre_window{
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  background: #fff;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: aniFullScreen linear 2s infinite;
-}
-#intre_window p{
-  background: #fff;
-  box-shadow: 0 0 15px #fff;
-  width: 90%;
-  border-radius: 50px;
-  padding: 10px 30px;
-  font-size: 2rem;
-  font-weight: 600;
-  text-align: center;
 }
 @keyframes aniFullScreen {
   0%{
@@ -387,4 +364,74 @@ body {
   body{
     overflow-y: scroll;
   }
+}
+
+/* --------- crop and preview button ------------- */
+#pre_crop{
+  position: relative;
+  width: 100%;
+  height: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+}
+#crap_btn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#crap_btn p {
+  position: relative;
+  width: 130px;
+  font-size: 1.2rem;
+  border-radius: 15px;
+  background: blue;
+  padding: 8px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 0 8px #000;
+  border-bottom: 5px solid #260080;
+  font-weight: 900;
+  transition: linear 0.1s;
+}
+#crap_btn p::before {
+  height: 40%;
+  background: rgba(255, 255, 255, 0.07);
+}
+#crap_btn.active p {
+  font-size: 1.1rem;
+  box-shadow: 0 0 3px #000;
+}
+#pvu_btn {
+  position: relative;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#pvu_btn p {
+  position: relative;
+  width: 130px;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  background: #00ff00;
+  padding: 8px 20px;
+  color: #fff;
+  box-shadow: 0 0 8px #000;
+  border-bottom: 5px solid #00801a;
+  font-weight: 900;
+  transition: linear 0.1s;
+}
+#pvu_btn p::before {
+  top: 2px;
+  border-radius: 35px;
+  height: 36%;
+}
+#pvu_btn.active p {
+  font-size: 1.1rem;
+  box-shadow: 0 0 3px #000;
 }
