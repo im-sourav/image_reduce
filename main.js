@@ -4,6 +4,8 @@ const corner = document.querySelectorAll(".corner");
 const imgInput = document.getElementById("img_input");
 const preview = document.getElementById("preview");
 const closeBtn = document.getElementById("close");
+const instraction = document.getElementById("instraction");
+const iKnow = document.getElementById("i_know");
 const imgResize = document.getElementById("img_resize");
 const selectionBtn = document.getElementById("selection_btn");
 const imgSizeInput = document.getElementById("img_size_input");
@@ -33,7 +35,7 @@ let sids = {
 let selectWidth = 100;
 let inkb = 512;
 let squir = false;
-let margin, w, h;
+let margin, w, h, newCreateImg;
 
 // set inkb value
 imgSizeInput.addEventListener("keyup", (e) => {
@@ -189,6 +191,7 @@ let ratio = 0,
   nsize = 0;
 
 imgInput.addEventListener("change", (e) => {
+  fullScreen();
   if (!e.target.files[0]) return;
   sids = {
     r: 25,
@@ -293,6 +296,7 @@ crapBtn.addEventListener("click", () => {
     root.style.setProperty("--height", `${minSize * scl}px`);
   }
 
+  newCreateImg = maekImgPerfectSize();
   imgResize.style.backgroundImage = `url(${maekImgPerfectSize()})`;
 
   downloadBtn.addEventListener("click", () => {
@@ -309,18 +313,19 @@ crapBtn.addEventListener("click", () => {
   });
 });
 
-// canvas propatys -----------
-
+iKnow.addEventListener("click", () => {
+  instraction.style.display = "none";
+})
 pvuBtn.addEventListener("click", () => {
+  if(!newCreateImg){
+    instraction.style.display = "flex";
+    return;
+  }
   preview.style.display = "flex";
 });
 closeBtn.addEventListener("click", () => {
   preview.style.display = "none";
 });
-imgInput.addEventListener("change", () => {
-  fullScreen();
-
-})
 // full sereen mood
   sSelector.addEventListener("touchstart", () => {
   })
