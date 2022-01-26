@@ -7,35 +7,36 @@ const closeBtn = document.getElementById("close");
 const instraction = document.getElementById("instraction");
 const iKnow = document.getElementById("i_know");
 const imgResize = document.getElementById("img_resize");
-const selectionBtn = document.getElementById("selection_btn");
+const mide = document.querySelectorAll(".mide");
 const imgSizeInput = document.getElementById("img_size_input");
 const pvuBtn = document.getElementById("pvu_btn");
 const downloadBtn = document.getElementById("download_btn");
 const crapBtn = document.getElementById("crap_btn");
 const upload_imagge = document.getElementById("upload_imagge");
-const root = document.querySelector(":root");
+const inputW = document.getElementById("input_w");
+const inputH = document.getElementById("input_h");
+const contentOther = document.getElementById("content_other");
 /* ------------------------------------------------
 ----- adjustment width height make ------*/
 let wHeight = window.innerHeight,
   wWidth = window.innerWidth;
 // who is smallar
 let minSize = (wHeight > wWidth ? wWidth : wHeight) - 20;
-root.style.setProperty("--width", `${minSize}px`);
-root.style.setProperty("--height", `${minSize}px`);
 
 /*----------------------------------------------------*/
 let $$cvs = document.createElement("canvas");
 let $$ctx = $$cvs.getContext("2d");
 let sids = {
-  r: 25,
-  l: 25,
-  t: 25,
-  b: 25,
+  w: undefined,
+  h: undefined,
+  tx: undefined,
+  ty: undefined,
 };
 let selectWidth = 100;
 let inkb = 512;
 let squir = false;
-let margin, w, h, newCreateImg;
+const img = new Image();
+let margin, w, h, newCreateImg, ssw, ssh, ratio, nsize, Img;
 
 // set inkb value
 imgSizeInput.addEventListener("keyup", (e) => {
@@ -45,32 +46,28 @@ imgSizeInput.addEventListener("keyup", (e) => {
   }
   inkb = Number(imgSizeInput.value);
 });
-selectionBtn.addEventListener("click", () => {
-  if(!squir){
-    selectionBtn.classList.add("active");
-    if(margin){
-      if (h > w) {
-          sids.t = 25 + margin;
-          sids.b = 25 + margin;
-          sids.l = 25;
-          sids.r = 25;
-      } else {
-          sids.l = 25 + margin;
-          sids.r = 25 + margin;
-          sids.t = 25;
-          sids.b = 25;
-      }
-      cssSides();
-    }
-  }else{
-    selectionBtn.classList.remove("active");
-    for (const ele in sids) {
-      sids[ele] = 25;
-    }
-    cssSides();
+inputW.addEventListener("keyup", () => {
+  if (!inputW.value || 0 >= inputW.value) {
+    return;
+  } else if (inputW.value > ssw) {
+    sids.w = ssw;
+  } else {
+    sids.w = Number(inputW.value);
   }
-  squir = squir ? false : true;
-})
+  sids.tx = (ssw - sids.w) / 2;
+  setCss();
+});
+inputH.addEventListener("keyup", () => {
+  if (!inputH.value || 0 >= inputH.value) {
+    return;
+  } else if (inputH.value > ssh) {
+    sids.h = ssh;
+  }else {
+    sids.h = Number(inputH.value);
+  }
+  sids.ty = (ssh - sids.h) / 2;
+  setCss();
+});
 
 upload_imagge.addEventListener("click", () => imgInput.click());
 hover(upload_imagge);
@@ -96,18 +93,28 @@ function hover(element) {
 }
 
 // set sides css propatys
-function cssSides() {
-  root.style.setProperty("--sl", `${sids.l}px`);
-  root.style.setProperty("--sr", `${sids.r}px`);
-  root.style.setProperty("--st", `${sids.t}px`);
-  root.style.setProperty("--sb", `${sids.b}px`);
+function setCss() {
+  selector.style.transform = `translateX(${sids.tx}px) translateY(${sids.ty}px)`;
+  selector.style.width = `${sids.w}px`;
+  selector.style.height = `${sids.h}px`;
+  inputW.value = sids.w;
+  inputH.value = sids.h;
 }
+const cnr = [
+  selector,
+  corner[0],
+  corner[1],
+  corner[2],
+  corner[3],
+  mide[0],
+  mide[1],
+  mide[2],
+  mide[3],
+];
 
-
-const cnr = [selector, corner[0], corner[1], corner[2], corner[3]];
 let isCorner = false;
 
-cnr.forEach((elmt, i) => {
+cnr.forEach((elmt) => {
   let lx, ly, dx, dy;
   elmt.addEventListener("touchstart", (e) => {
     lx = e.touches[0].clientX;
@@ -120,64 +127,61 @@ cnr.forEach((elmt, i) => {
     lx = e.touches[0].clientX;
     ly = e.touches[0].clientY;
 
+    // protact sides when colluction
+    function pT() {
+      return sids.ty + dy >= 0;
+    }
+    function pR() {
+      return sids.tx + dx + sids.w <= ssw;
+    }
+    function pB() {
+      return sids.ty + dy + sids.h <= ssh;
+    }
+    function pL() {
+      return sids.tx + dx >= 0;
+    }
     // ------- touch movement -------
     if (elmt != selector) {
       isCorner = true;
     }
-    if (elmt === corner[0] && sids.l + dx > 0 && sids.t + dy > 0) {
-      if (squir) {
-        let min = Math.floor((dx + dy) / 2);
-        sids.l += min;
-        sids.t += min;
-      } else {
-        sids.l += dx;
-        sids.t += dy;
-      }
-      cssSides();
-    } else if (elmt === corner[1] && sids.r - dx > 0 && sids.t + dy > 0) {
-      if (squir) {
-        let min = Math.floor((-dx + dy) / 2);
-        sids.r += min;
-        sids.t += min;
-      } else {
-        sids.r += -dx;
-        sids.t += dy;
-      }
-      cssSides();
-    } else if (elmt === corner[2] && sids.r - dx > 0 && sids.b - dy > 0) {
-      if (squir) {
-        let min = Math.floor((-dx + -dy) / 2);
-        sids.r += min;
-        sids.b += min;
-      } else {
-        sids.r += -dx;
-        sids.b += -dy;
-      }
-      cssSides();
-    } else if (elmt === corner[3] && sids.l + dx > 0 && sids.b - dy > 0) {
-      if (squir) {
-        let min = Math.floor((dx + -dy) / 2);
-        sids.l += min;
-        sids.b += min;
-      } else {
-        sids.l += dx;
-        sids.b += -dy;
-      }
-      cssSides();
-    } else if (
-      !isCorner &&
-      sids.l + dx > 0 &&
-      sids.t + dy > 0 &&
-      sids.r - dx > 0 &&
-      sids.b - dy > 0
-    ) {
-      this.dx = Math.floor(dx);
-      this.dy = Math.floor(dy);
-      sids.l += this.dx;
-      sids.r += -this.dx;
-      sids.t += this.dy;
-      sids.b += -this.dy;
-      cssSides();
+    if (elmt === corner[0] && pT() && pL()) {
+      sids.w += -dx;
+      sids.h += -dy;
+      sids.tx += dx;
+      sids.ty += dy;
+      setCss();
+    } else if (elmt === corner[1] && pT() && pR()) {
+      sids.w += dx;
+      sids.h += -dy;
+      sids.ty += dy;
+      setCss();
+    } else if (elmt === corner[2] && pR() && pB()) {
+      sids.w += dx;
+      sids.h += dy;
+      setCss();
+    } else if (elmt === corner[3] && pB() && pL()) {
+      sids.w += -dx;
+      sids.h += dy;
+      sids.tx += dx;
+      setCss();
+    } else if (elmt === mide[0] && pT()) {
+      sids.h += -dy;
+      sids.ty += dy;
+      setCss();
+    } else if (elmt === mide[1] && pR()) {
+      sids.w += dx;
+      setCss();
+    } else if (elmt === mide[2] && pB()) {
+      sids.h += dy;
+      setCss();
+    } else if (elmt === mide[3] && pL()) {
+      sids.w += -dx;
+      sids.tx += dx;
+      setCss();
+    } else if (!isCorner && pB() && pL() && pT() && pR()) {
+      sids.tx += dx;
+      sids.ty += dy;
+      setCss();
     }
   });
   elmt.addEventListener("touchend", (e) => {
@@ -186,93 +190,64 @@ cnr.forEach((elmt, i) => {
     }
   });
 });
-const img = new Image();
-let ratio = 0,
-  nsize = 0;
 
 imgInput.addEventListener("change", (e) => {
-  fullScreen();
   if (!e.target.files[0]) return;
-  sids = {
-    r: 25,
-    l: 25,
-    t: 25,
-    b: 25,
-  };
-  ratio = 0;
-  nsize = 0;
-  cssSides();
-  let Img = URL.createObjectURL(e.target.files[0]);
+
+  Img = URL.createObjectURL(e.target.files[0]);
   img.src = Img;
   img.onload = () => {
     sSelector.style.display = "flex";
+    contentOther.style.display = "block";
     let ss = sSelector.style;
     w = img.width;
     h = img.height;
-    
+
     if (h > w) {
       ratio = h / minSize;
       nsize = w / ratio;
       ss.backgroundSize = `${nsize}px ${minSize}px`;
       ss.width = `${nsize}px`;
       ss.height = `${minSize}px`;
-      margin = Math.floor(minSize - nsize) / 2;
-      if (squir) {
-        sids.t = 25 + margin;
-        sids.b = 25 + margin;
-        root.style.setProperty("--st", `${25 + margin}px`);
-        root.style.setProperty("--sb", `${25 + margin}px`);
-      }
     } else {
       ratio = w / minSize;
       nsize = h / ratio;
       ss.backgroundSize = `${minSize}px ${nsize}px`;
       ss.width = `${minSize}px`;
       ss.height = `${nsize}px`;
-      margin = Math.floor(minSize - nsize) / 2;
-      if (squir) {
-        sids.l = 25 + margin;
-        sids.r = 25 + margin;
-        root.style.setProperty("--sl", `${25 + margin}px`);
-        root.style.setProperty("--sr", `${25 + margin}px`);
-      }
     }
-
+    ssw = sSelector.clientWidth;
+    ssh = sSelector.clientHeight;
+    sids.w = ssw * 0.75;
+    sids.h = ssh * 0.75;
+    sids.tx = ssw * 0.125;
+    sids.ty = ssh * 0.125;
+    setCss();
     ss.backgroundImage = `url('${Img}')`;
   };
 });
 
 crapBtn.addEventListener("click", () => {
+  if (!Img) return;
   preview.style.display = "flex";
-
-  let left = selector.offsetLeft,
-    top = selector.offsetTop,
-    wid = selector.clientWidth,
-    hei = selector.clientHeight,
-    scaleN = wid / selectWidth,
-    cw,
-    ch;
+  let scaleN = Math.floor(sids.w / selectWidth),
+  cw,
+  ch;
 
   function maekImgPerfectSize() {
-    if (squir) {
-      $$cvs.width = selectWidth;
-      $$cvs.height = selectWidth;
-      cw = selectWidth;
-      ch = selectWidth;
-    } else {
-      $$cvs.width = selectWidth;
-      scaleN = selector.clientWidth / selectWidth;
-      $$cvs.height = hei / scaleN;
-      cw = selectWidth;
-      ch = hei / scaleN;
-    }
+    $$cvs.width = selectWidth;
+    scaleN = selector.clientWidth / selectWidth;
+    ch = sids.h / scaleN;
+    $$cvs.height = ch;
+    cw = selectWidth;
+
     $$ctx.clearRect(0, 0, $$cvs.width, $$cvs.height);
     $$ctx.drawImage(
       img,
-      left * ratio,
-      top * ratio,
-      wid * ratio,
-      hei * ratio,
+      sids.tx * ratio,
+      sids.ty * ratio,
+      sids.w * ratio,
+      sids.h * ratio,
       0,
       0,
       $$cvs.width,
@@ -287,14 +262,10 @@ crapBtn.addEventListener("click", () => {
     selectWidth -= 10;
   }
 
-  if (squir) {
-    imgResize.style.backgroundSize = `${minSize}px ${minSize}px`;
-  } else {
-    let scl = ch / cw;
-    imgResize.style.backgroundSize = `${minSize}px ${minSize * scl}px`;
-    root.style.setProperty("--width", `${minSize}px`);
-    root.style.setProperty("--height", `${minSize * scl}px`);
-  }
+  let scl = ch / cw;
+  imgResize.style.backgroundSize = `${minSize}px ${minSize * scl}px`;
+  imgResize.style.width = `${minSize}px`;
+  imgResize.style.height = `${minSize * scl}px`;
 
   newCreateImg = maekImgPerfectSize();
   imgResize.style.backgroundImage = `url(${maekImgPerfectSize()})`;
@@ -315,9 +286,9 @@ crapBtn.addEventListener("click", () => {
 
 iKnow.addEventListener("click", () => {
   instraction.style.display = "none";
-})
+});
 pvuBtn.addEventListener("click", () => {
-  if(!newCreateImg){
+  if (!newCreateImg) {
     instraction.style.display = "flex";
     return;
   }
@@ -326,23 +297,3 @@ pvuBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
   preview.style.display = "none";
 });
-// full sereen mood
-  sSelector.addEventListener("touchstart", () => {
-  })
-  function getFullScreen() {
-    return (
-      document.fullscreenElement ||
-      document.webkitFullscreenElement ||
-      document.mozFullscreenElement ||
-      document.msFullscreenElement
-    );
-  }
-  function fullScreen() {
-    if (getFullScreen()) return;
-    if (!getFullScreen()) {
-      document.documentElement
-        .requestFullscreen()
-        .catch(console.log());
-    }
-  }
-
