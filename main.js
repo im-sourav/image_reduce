@@ -26,7 +26,7 @@ let minSize = (wHeight > wWidth ? wWidth : wHeight) - 20;
 /*----------------------------------------------------*/
 let $$cvs = document.createElement("canvas");
 let $$ctx = $$cvs.getContext("2d");
-let sids = {
+let sites = {
   w: undefined,
   h: undefined,
   tx: undefined,
@@ -50,22 +50,22 @@ inputW.addEventListener("keyup", () => {
   if (!inputW.value || 0 >= inputW.value) {
     return;
   } else if (inputW.value > ssw) {
-    sids.w = ssw;
+    sites.w = ssw;
   } else {
-    sids.w = Number(inputW.value);
+    sites.w = Number(inputW.value);
   }
-  sids.tx = (ssw - sids.w) / 2;
+  sites.tx = (ssw - sites.w) / 2;
   setCss();
 });
 inputH.addEventListener("keyup", () => {
   if (!inputH.value || 0 >= inputH.value) {
     return;
   } else if (inputH.value > ssh) {
-    sids.h = ssh;
+    sites.h = ssh;
   }else {
-    sids.h = Number(inputH.value);
+    sites.h = Number(inputH.value);
   }
-  sids.ty = (ssh - sids.h) / 2;
+  sites.ty = (ssh - sites.h) / 2;
   setCss();
 });
 
@@ -94,11 +94,11 @@ function hover(element) {
 
 // set sides css propatys
 function setCss() {
-  selector.style.transform = `translateX(${sids.tx}px) translateY(${sids.ty}px)`;
-  selector.style.width = `${sids.w}px`;
-  selector.style.height = `${sids.h}px`;
-  inputW.value = sids.w;
-  inputH.value = sids.h;
+  selector.style.transform = `translateX(${sites.tx}px) translateY(${sites.ty}px)`;
+  selector.style.width = `${sites.w}px`;
+  selector.style.height = `${sites.h}px`;
+  inputW.value = sites.w;
+  inputH.value = sites.h;
 }
 const cnr = [
   selector,
@@ -129,58 +129,58 @@ cnr.forEach((elmt) => {
 
     // protact sides when colluction
     function pT() {
-      return sids.ty + dy >= 0;
+      return sites.ty + dy >= 0;
     }
     function pR() {
-      return sids.tx + dx + sids.w <= ssw;
+      return sites.tx + dx + sites.w <= ssw;
     }
     function pB() {
-      return sids.ty + dy + sids.h <= ssh;
+      return sites.ty + dy + sites.h <= ssh;
     }
     function pL() {
-      return sids.tx + dx >= 0;
+      return sites.tx + dx >= 0;
     }
     // ------- touch movement -------
     if (elmt != selector) {
       isCorner = true;
     }
     if (elmt === corner[0] && pT() && pL()) {
-      sids.w += -dx;
-      sids.h += -dy;
-      sids.tx += dx;
-      sids.ty += dy;
+      sites.w += -dx;
+      sites.h += -dy;
+      sites.tx += dx;
+      sites.ty += dy;
       setCss();
     } else if (elmt === corner[1] && pT() && pR()) {
-      sids.w += dx;
-      sids.h += -dy;
-      sids.ty += dy;
+      sites.w += dx;
+      sites.h += -dy;
+      sites.ty += dy;
       setCss();
     } else if (elmt === corner[2] && pR() && pB()) {
-      sids.w += dx;
-      sids.h += dy;
+      sites.w += dx;
+      sites.h += dy;
       setCss();
     } else if (elmt === corner[3] && pB() && pL()) {
-      sids.w += -dx;
-      sids.h += dy;
-      sids.tx += dx;
+      sites.w += -dx;
+      sites.h += dy;
+      sites.tx += dx;
       setCss();
     } else if (elmt === mide[0] && pT()) {
-      sids.h += -dy;
-      sids.ty += dy;
+      sites.h += -dy;
+      sites.ty += dy;
       setCss();
     } else if (elmt === mide[1] && pR()) {
-      sids.w += dx;
+      sites.w += dx;
       setCss();
     } else if (elmt === mide[2] && pB()) {
-      sids.h += dy;
+      sites.h += dy;
       setCss();
     } else if (elmt === mide[3] && pL()) {
-      sids.w += -dx;
-      sids.tx += dx;
+      sites.w += -dx;
+      sites.tx += dx;
       setCss();
     } else if (!isCorner && pB() && pL() && pT() && pR()) {
-      sids.tx += dx;
-      sids.ty += dy;
+      sites.tx += dx;
+      sites.ty += dy;
       setCss();
     }
   });
@@ -218,10 +218,10 @@ imgInput.addEventListener("change", (e) => {
     }
     ssw = sSelector.clientWidth;
     ssh = sSelector.clientHeight;
-    sids.w = ssw * 0.75;
-    sids.h = ssh * 0.75;
-    sids.tx = ssw * 0.125;
-    sids.ty = ssh * 0.125;
+    sites.w = ssw * 0.75;
+    sites.h = ssh * 0.75;
+    sites.tx = ssw * 0.125;
+    sites.ty = ssh * 0.125;
     setCss();
     ss.backgroundImage = `url('${Img}')`;
   };
@@ -230,24 +230,24 @@ imgInput.addEventListener("change", (e) => {
 crapBtn.addEventListener("click", () => {
   if (!Img) return;
   preview.style.display = "flex";
-  let scaleN = Math.floor(sids.w / selectWidth),
+  let scaleN = Math.floor(sites.w / selectWidth),
   cw,
   ch;
 
   function maekImgPerfectSize() {
     $$cvs.width = selectWidth;
     scaleN = selector.clientWidth / selectWidth;
-    ch = sids.h / scaleN;
+    ch = sites.h / scaleN;
     $$cvs.height = ch;
     cw = selectWidth;
 
     $$ctx.clearRect(0, 0, $$cvs.width, $$cvs.height);
     $$ctx.drawImage(
       img,
-      sids.tx * ratio,
-      sids.ty * ratio,
-      sids.w * ratio,
-      sids.h * ratio,
+      sites.tx * ratio,
+      sites.ty * ratio,
+      sites.w * ratio,
+      sites.h * ratio,
       0,
       0,
       $$cvs.width,
@@ -286,7 +286,7 @@ crapBtn.addEventListener("click", () => {
 
 iKnow.addEventListener("click", () => {
   instraction.style.display = "none";
-});
+}); 
 pvuBtn.addEventListener("click", () => {
   if (!newCreateImg) {
     instraction.style.display = "flex";

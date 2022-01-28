@@ -4,8 +4,6 @@
   box-sizing: border-box;
   user-select: none;
   font-family: sans-serif;
-  touch-action: none;
-  -ms-touch-action: none;
 }
 body {
   position: relative;
@@ -22,14 +20,16 @@ body {
   margin: 25px 0;
   position: relative;
   background: #999;
-  overflow: hidden;
   display: none;
+  overflow: hidden;
   background-repeat: no-repeat;
   background-position: center;
   box-shadow: 0 0 8px #000;
+  touch-action: none;
+  -ms-touch-action: none;
 }
 [class*="out"]{
-  position: absolute;
+  position: fixed;
   width: 9000px;
   height: 9000px;
   background: rgba(0, 0, 0, 0.4);
@@ -61,6 +61,8 @@ body {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   border: solid 1px #ffffff;
+  touch-action: none;
+  -ms-touch-action: none;
   z-index: 1;
 }
 .soff {
@@ -115,35 +117,62 @@ body {
 }
 .mide{
   position: absolute;
-  margin: 6px;
 }
 .m1{
   width: 14px;
   height: 4px;
   background: #fff;
-  left: calc(50% - 13px);
-  top: -8px;
+  left: calc(50% - 7px);
+  top: -2px;
 }
 .m3{
   width: 14px;
   height: 4px;
   background: #fff;
-  left: calc(50% - 13px);
-  bottom: -8px;
+  left: calc(50% - 7px);
+  bottom: -2px;
 }
 .m2{
   width: 4px;
   height: 14px;
   background: #fff;
-  top: calc(50% - 13px);
-  right: -8px;
+  top: calc(50% - 7px);
+  right: -2px;
 }
 .m4{
   width: 4px;
   height: 14px;
   background: #fff;
-  top: calc(50% - 13px);
-  left: -8px;
+  top: calc(50% - 7px);
+  left: -2px;
+}
+.mide::before{
+  content: '';
+  position: absolute;
+}
+.m1::before{
+  width: 400%;
+  height: 400%;
+  left: -150%;
+  bottom: 0;
+}
+.m2::before{
+  width: 400%;
+  height: 400%;
+  top: -150%;
+  left: 0;
+}
+.m3::before{
+  width: 400%;
+  height: 400%;
+  left: -150%;
+  top: 0;
+}
+.m4::before{
+  width: 400%;
+  height: 400%;
+  top: -150%;
+  right: 0;
 }
 #img_input {
   position: relative;
@@ -204,8 +233,9 @@ body {
   top: 0;
   transform: rotate(45deg);
   transition: linear 0.3s;
-  color: #fff;
-  font-weight: 900;
+  color: #f00;
+  text-shadow: 0 0 3px #000;
+  font-weight: 600;
   z-index: 5;
 }
 #preview #close.active {
@@ -214,12 +244,11 @@ body {
 #download_btn {
   position: absolute;
   height: 60px;
-  bottom: 30px;
+  top: 40px;
 }
 #img_resize {
   position: relative;
-  width: var(--width);
-  min-height: var(--height);
+  margin-top: 30px;
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: 0 0 2px #000, 0 0 5px #000, 0 0 10px #000;
