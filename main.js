@@ -115,80 +115,97 @@ const cnr = [
 let isCorner = false;
 
 cnr.forEach((elmt) => {
-  let lx, ly, dx, dy;
+  let lx, ly, dx, dy, down = false;
+
   elmt.addEventListener("touchstart", (e) => {
-    lx = e.touches[0].clientX;
-    ly = e.touches[0].clientY;
+    eStart({clientX: e.touches[0].clientX, clientY: e.touches[0].clientY});
   });
-
   elmt.addEventListener("touchmove", (e) => {
-    dx = e.touches[0].clientX - lx;
-    dy = e.touches[0].clientY - ly;
-    lx = e.touches[0].clientX;
-    ly = e.touches[0].clientY;
-
-    // protact sides when colluction
-    function pT() {
-      return sites.ty + dy >= 0;
-    }
-    function pR() {
-      return sites.tx + dx + sites.w <= ssw;
-    }
-    function pB() {
-      return sites.ty + dy + sites.h <= ssh;
-    }
-    function pL() {
-      return sites.tx + dx >= 0;
-    }
-    // ------- touch movement -------
-    if (elmt != selector) {
-      isCorner = true;
-    }
-    if (elmt === corner[0] && pT() && pL()) {
-      sites.w += -dx;
-      sites.h += -dy;
-      sites.tx += dx;
-      sites.ty += dy;
-      setCss();
-    } else if (elmt === corner[1] && pT() && pR()) {
-      sites.w += dx;
-      sites.h += -dy;
-      sites.ty += dy;
-      setCss();
-    } else if (elmt === corner[2] && pR() && pB()) {
-      sites.w += dx;
-      sites.h += dy;
-      setCss();
-    } else if (elmt === corner[3] && pB() && pL()) {
-      sites.w += -dx;
-      sites.h += dy;
-      sites.tx += dx;
-      setCss();
-    } else if (elmt === mide[0] && pT()) {
-      sites.h += -dy;
-      sites.ty += dy;
-      setCss();
-    } else if (elmt === mide[1] && pR()) {
-      sites.w += dx;
-      setCss();
-    } else if (elmt === mide[2] && pB()) {
-      sites.h += dy;
-      setCss();
-    } else if (elmt === mide[3] && pL()) {
-      sites.w += -dx;
-      sites.tx += dx;
-      setCss();
-    } else if (!isCorner && pB() && pL() && pT() && pR()) {
-      sites.tx += dx;
-      sites.ty += dy;
-      setCss();
-    }
+    eMove({clientX: e.touches[0].clientX, clientY: e.touches[0].clientY});
   });
-  elmt.addEventListener("touchend", (e) => {
+  elmt.addEventListener("touchend", eEnd);
+
+  elmt.addEventListener("click", eStart);
+  elmt.addEventListener("mousemove", eMove);
+  elmt.addEventListener("mouseup", eEnd);
+
+
+  function eStart(e) {
+    down = down ? false : true;
+    lx = e.clientX;
+    ly = e.clientY;
+
+  }
+  function eMove(e) {
+    if (down) {
+      dx = e.clientX - lx;
+      dy = e.clientY - ly;
+      lx = e.clientX;
+      ly = e.clientY;
+      
+      // protact sides when colluction
+      function pT() {
+        return sites.ty + dy >= 0;
+      }
+      function pR() {
+        return sites.tx + dx + sites.w <= ssw;
+      }
+      function pB() {
+        return sites.ty + dy + sites.h <= ssh;
+      }
+      function pL() {
+        return sites.tx + dx >= 0;
+      }
+      // ------- touch movement -------
+      if (elmt != selector) {
+        isCorner = true;
+      }
+      if (elmt === corner[0] && pT() && pL()) {
+        sites.w += -dx;
+        sites.h += -dy;
+        sites.tx += dx;
+        sites.ty += dy;
+        setCss();
+      } else if (elmt === corner[1] && pT() && pR()) {
+        sites.w += dx;
+        sites.h += -dy;
+        sites.ty += dy;
+        setCss();
+      } else if (elmt === corner[2] && pR() && pB()) {
+        sites.w += dx;
+        sites.h += dy;
+        setCss();
+      } else if (elmt === corner[3] && pB() && pL()) {
+        sites.w += -dx;
+        sites.h += dy;
+        sites.tx += dx;
+        setCss();
+      } else if (elmt === mide[0] && pT()) {
+        sites.h += -dy;
+        sites.ty += dy;
+        setCss();
+      } else if (elmt === mide[1] && pR()) {
+        sites.w += dx;
+        setCss();
+      } else if (elmt === mide[2] && pB()) {
+        sites.h += dy;
+        setCss();
+      } else if (elmt === mide[3] && pL()) {
+        sites.w += -dx;
+        sites.tx += dx;
+        setCss();
+      } else if (!isCorner && pB() && pL() && pT() && pR()) {
+        sites.tx += dx;
+        sites.ty += dy;
+        setCss();
+      }
+    }
+  }
+  function eEnd() {
     if (elmt != selector) {
       isCorner = false;
     }
-  });
+  }
 });
 
 imgInput.addEventListener("change", (e) => {

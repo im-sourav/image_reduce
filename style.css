@@ -17,6 +17,7 @@ body {
 }
 
 #s_contaner {
+  box-sizing: content-box;
   margin: 25px 0;
   position: relative;
   background: #999;
@@ -25,8 +26,16 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   box-shadow: 0 0 8px #000;
+  border: solid transparent 10px;
   touch-action: none;
   -ms-touch-action: none;
+}
+#s_contaner::before {
+  content: "";
+  position: absolute;
+  width: 99%;
+  height: 99%;
+  border: solid 1px #000;
 }
 [class*="out"]{
   position: fixed;
@@ -124,6 +133,7 @@ body {
   background: #fff;
   left: calc(50% - 7px);
   top: -2px;
+  cursor: n-resize;
 }
 .m3{
   width: 14px;
@@ -131,6 +141,7 @@ body {
   background: #fff;
   left: calc(50% - 7px);
   bottom: -2px;
+  cursor: s-resize;
 }
 .m2{
   width: 4px;
@@ -138,6 +149,7 @@ body {
   background: #fff;
   top: calc(50% - 7px);
   right: -2px;
+  cursor: e-resize;
 }
 .m4{
   width: 4px;
@@ -145,6 +157,7 @@ body {
   background: #fff;
   top: calc(50% - 7px);
   left: -2px;
+  cursor: w-resize;
 }
 .mide::before{
   content: '';
