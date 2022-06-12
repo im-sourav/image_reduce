@@ -5,71 +5,90 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#00b193" />
-    <link rel="stylesheet" href="style.css" />
     <title>Image Reducer</title>
+    <link rel="stylesheet" href="./style.css">
     <script defer src="main.js"></script>
   </head>
   <body>
-    <input type="file" id="img_input" accept=".jpg,.jpeg,.gif,.png" multiple />
+    <input type="file" id="img_input" accept=".jpg,.jpeg,.gif,.png" />
+    <input
+      type="file"
+      id="img_only_size"
+      accept=".jpg,.jpeg,.gif,.png"
+      multiple
+    />
     <div id="upload_imagge"><p class="bl">Upload Image</p></div>
-    <div id="s_contaner">
-      <div id="selector">
-        <span class="soff"></span>
-        <span class="soff"></span>
-        <div class="corner sc1"></div>
-        <div class="corner sc2"></div>
-        <div class="corner sc3"></div>
-        <div class="corner sc4"></div>
-        <div class="mide m1"></div>
-        <div class="mide m2"></div>
-        <div class="mide m3"></div>
-        <div class="mide m4"></div>
-        <span class="outS1"></span>
-        <span class="outS2"></span>
-        <span class="outS3"></span>
-        <span class="outS4"></span>
-      </div>
+    <br><br>
+    <div id="upload_imagge_2">
+      <p class="bl"><span>Upload Images</span> <small>Only Size</small></p>
     </div>
-    <div id="content_other">
-      <div id="preview">
-        <div id="close">+</div>
-        <div id="img_resize"></div>
-        <div id="download_btn"><p class="bl">Save Image</p></div>
-      </div>
-      <div id="size_img_selection_button">
-        <div class="sst">
-          <div id="set_size" class="bl">
-            <p id="file_size_text">File Size</p>
-            <input
-              type="number"
-              id="img_size_input"
-              placeholder="512"
-              value="512"
-            />
-            <p id="inkb">kb</p>
-          </div>
-        </div>
-        <div id="img_selection">
-          <div class="inputs_box bl">
-            <div class="text">W:</div>
-            <input type="number" id="input_w" />
-          </div>
-          <div class="inputs_box bl">
-            <div class="text">H:</div>
-            <input type="number" id="input_h" />
-          </div>
+    <div id="main-window">
+      <div id="close-main-windw"></div>
+      <div id="s_contaner">
+        <div id="back-img"></div>
+        <div id="selected-img"></div>
+        <div id="selector">
+          <span class="soff"></span>
+          <span class="soff"></span>
+          <span class="corner"></span>
+          <span class="corner"></span>
+          <span class="corner"></span>
+          <span class="corner"></span>
+          <span class="mide mtb"></span>
+          <span class="mide mtb"></span>
+          <span class="mide mlr"></span>
+          <span class="mide mlr"></span>
         </div>
       </div>
-      <div id="pre_crop">
-        <div id="crap_btn"><p class="bl">Crop</p></div>
-        <div id="pvu_btn"><p class="bl">Preview</p></div>
-      </div>
-      <div id="instraction">
-        <section>
-          <h1>?</h1>
-          <i>You haven't finished your woek!</i>
-          <span><p id="i_know">OK</p></span>
-        </section>
+      <div id="content_other">
+        <div id="preview-window">
+          <div id="preview">
+            <div id="close"></div>
+            <div id="img-view-box">
+              <img id="img_resize">
+            </div>
+            <div id="download_btn"><p class="bl">Download IMG</p></div>
+          </div>
+        </div>
+        <div id="size_img_selection_button">
+          <div class="sst">
+            <div id="set_size" class="bl">
+              <p id="file_size_text">IMG Size:</p>
+              <input
+                type="number"
+                id="img_size_input"
+                placeholder="100"
+                value="100" 
+              />
+              <p id="inkb">kb</p>
+            </div>
+          </div>
+          <div id="img_selection">
+            <div class="inputs_box bl">
+              <div class="text">W:</div>
+              <input type="number" id="input_w" />
+            </div>
+            <div class="inputs_box bl">
+              <div class="text">H:</div>
+              <input type="number" id="input_h" />
+            </div>
+          </div>
+        </div>
+        <div id="pre_crop">
+          <span>
+            <div id="crap_btn"><p class="bl">Crop</p></div>
+          </span>
+          <span>
+            <div id="pvu_btn"><p class="bl">Preview</p></div>
+          </span>
+        </div>
+        <div id="instraction">
+          <section>
+            <p class="question">?</p>
+            <x>You did't crop image!</x>
+            <span><p id="i_know">OK</p></span>
+          </section>
+        </div>
       </div>
     </div>
     <div id="coppy"><b>©</b> SouravBarui 2022</div>

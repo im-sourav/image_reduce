@@ -1,8 +1,7 @@
 const sSelector = document.getElementById("s_contaner");
 const selector = document.getElementById("selector");
-const corner = document.querySelectorAll(".corner");
 const imgInput = document.getElementById("img_input");
-const preview = document.getElementById("preview");
+const preview = document.getElementById("preview-window");
 const closeBtn = document.getElementById("close");
 const instraction = document.getElementById("instraction");
 const iKnow = document.getElementById("i_know");
@@ -16,294 +15,347 @@ const upload_imagge = document.getElementById("upload_imagge");
 const inputW = document.getElementById("input_w");
 const inputH = document.getElementById("input_h");
 const contentOther = document.getElementById("content_other");
-/* ------------------------------------------------
------ adjustment width height make ------*/
+const mainWindow = document.getElementById("main-window");
+const closeMainWindw = document.getElementById("close-main-windw");
+const selectedImg = document.getElementById("selected-img");
+const upload_imagge_2 = document.getElementById("upload_imagge_2");
+const img_only_size = document.getElementById("img_only_size");
+const backImg = document.getElementById("back-img");
+const root = document.querySelector(":root");
+/* ------------------------------------------------*/
+
+/* ------------------ maim function -------------------- */
+const setPrty = (name, delta, dirXis) => {
+  const w_h = dirXis ? sSelector.clientWidth : sSelector.clientHeight;
+  if (w_h >= dlmov[name[2]] + delta && 0 <= dlmov[name[2]] + delta) {
+    root.style.setProperty(name, `${(dlmov[name[2]] += delta)}px`);
+    inputW.value = selector.clientWidth;
+    inputH.value = selector.clientHeight;
+  }
+};
+/* -------------------------------------------------------- */
+
+/* --------------------- variables ---------------- */
+const dlmov = {
+  l: 0,
+  r: 0,
+  t: 0,
+  b: 0,
+};
+let selectWidth = 100;
+let lx, ly, dx, dy;
+let down = false;
+let inkb = 100;
+let fileNames = [];
+/* -------------------------------------------------------- */
+
+/*----- adjustment width height make ------*/
 let wHeight = window.innerHeight,
   wWidth = window.innerWidth;
 // who is smallar
-let minSize = (wHeight > wWidth ? wWidth : wHeight) - 20;
+let ratioX = (wHeight > wWidth ? wWidth : wHeight) - 100;
 
 /*----------------------------------------------------*/
-let $$cvs = document.createElement("canvas");
-let $$ctx = $$cvs.getContext("2d");
-let sites = {
-  w: undefined,
-  h: undefined,
-  tx: undefined,
-  ty: undefined,
-};
-let selectWidth = 100;
-let inkb = 512;
-let squir = false;
+let $cvs = document.createElement("canvas");
+let $ctx = $cvs.getContext("2d");
+
 const img = new Image();
-let margin, w, h, newCreateImg, ssw, ssh, ratio, nsize, Img;
+let newCreateImg = false, ratio, ratioY, Img;
 
 // set inkb value
 imgSizeInput.addEventListener("keyup", (e) => {
-  if (!imgSizeInput.value || 0 >= imgSizeInput.value) {
-    inkb = 512;
+  if (!parseInt(imgSizeInput.value) || 0 >= parseInt(imgSizeInput.value)) {
+    inkb = 100;
     return;
   }
   inkb = Number(imgSizeInput.value);
 });
+
 inputW.addEventListener("keyup", () => {
-  if (!inputW.value || 0 >= inputW.value) {
-    return;
-  } else if (inputW.value > ssw) {
-    sites.w = ssw;
-  } else {
-    sites.w = Number(inputW.value);
+  if (parseInt(inputW.value) <= 0 || inputW.value == "") {
+    inputW.value = 0;
+  } else if (sSelector.clientWidth <= parseInt(inputW.value)) {
+    inputW.value = sSelector.clientWidth;
   }
-  sites.tx = (ssw - sites.w) / 2;
-  setCss();
+  inputW.value = parseInt(inputW.value);
+  let hf = (sSelector.clientWidth - parseInt(inputW.value)) / 2;
+  root.style.setProperty("--l", `${(dlmov.l = hf)}px`);
+  root.style.setProperty("--r", `${(dlmov.r = hf)}px`);
 });
+
 inputH.addEventListener("keyup", () => {
-  if (!inputH.value || 0 >= inputH.value) {
-    return;
-  } else if (inputH.value > ssh) {
-    sites.h = ssh;
-  }else {
-    sites.h = Number(inputH.value);
+  if (parseInt(inputH.value) <= 0 || inputH.value == "") {
+    inputH.value = 0;
+  } else if (sSelector.clientHeight <= parseInt(inputH.value)) {
+    inputH.value = sSelector.clientHeight;
   }
-  sites.ty = (ssh - sites.h) / 2;
-  setCss();
+  inputH.value = parseInt(inputH.value);
+  let hf = (sSelector.clientHeight - parseInt(inputH.value)) / 2;
+  root.style.setProperty("--t", `${(dlmov.t = hf)}px`);
+  root.style.setProperty("--b", `${(dlmov.b = hf)}px`);
 });
 
 upload_imagge.addEventListener("click", () => imgInput.click());
+upload_imagge_2.addEventListener("click", () => img_only_size.click());
 hover(upload_imagge);
+hover(iKnow); 
 hover(crapBtn);
 hover(pvuBtn);
 hover(closeBtn);
 hover(downloadBtn);
+hover(closeMainWindw);
+hover(selector);
+hover(upload_imagge_2);
 
 // touch hover effect
 function hover(element) {
   element.addEventListener("touchstart", () => {
-    element.classList.add("active");
+    element.classList.add("hover");
   });
   element.addEventListener("touchend", () => {
-    element.classList.remove("active");
+    element.classList.remove("hover");
   });
   element.addEventListener("mouseenter", () => {
-    element.classList.add("active");
+    element.classList.add("hover");
   });
   element.addEventListener("mouseleave", () => {
-    element.classList.remove("active");
+    element.classList.remove("hover");
   });
 }
 
-// set sides css propatys
-function setCss() {
-  selector.style.transform = `translateX(${sites.tx}px) translateY(${sites.ty}px)`;
-  selector.style.width = `${sites.w}px`;
-  selector.style.height = `${sites.h}px`;
-  inputW.value = sites.w;
-  inputH.value = sites.h;
-}
-const cnr = [
-  selector,
-  corner[0],
-  corner[1],
-  corner[2],
-  corner[3],
-  mide[0],
-  mide[1],
-  mide[2],
-  mide[3],
-];
+closeMainWindw.addEventListener("click", () => {
+  mainWindow.classList.remove("active");
+  imgInput.value = "";
+  newCreateImg = false;
+});
 
-let isCorner = false;
+const corner = document.querySelectorAll(".corner");
+const mLR = document.querySelectorAll(".mlr");
+const mTB = document.querySelectorAll(".mtb");
 
-cnr.forEach((elmt) => {
-  let lx, ly, dx, dy, down = false;
+const mov = {
+  l: 1,
+  r: 1,
+  t: 1,
+  b: 1,
+};
 
-  elmt.addEventListener("touchstart", (e) => {
-    eStart({clientX: e.touches[0].clientX, clientY: e.touches[0].clientY});
-  });
-  elmt.addEventListener("touchmove", (e) => {
-    eMove({clientX: e.touches[0].clientX, clientY: e.touches[0].clientY});
-  });
-  elmt.addEventListener("touchend", eEnd);
+let mouse_down = false;
+corner.forEach((e, i) => {
+  hover(e);
+  e.addEventListener("touchstart", _start);
+  e.addEventListener("touchend", _end);
+  e.addEventListener("mousedown", _start);
+  e.addEventListener("mouseup", _end);
 
-  elmt.addEventListener("click", eStart);
-  elmt.addEventListener("mousemove", eMove);
-  elmt.addEventListener("mouseup", eEnd);
-
-
-  function eStart(e) {
-    down = down ? false : true;
-    lx = e.clientX;
-    ly = e.clientY;
-
-  }
-  function eMove(e) {
-    if (down) {
-      dx = e.clientX - lx;
-      dy = e.clientY - ly;
-      lx = e.clientX;
-      ly = e.clientY;
-      
-      // protact sides when colluction
-      function pT() {
-        return sites.ty + dy >= 0;
-      }
-      function pR() {
-        return sites.tx + dx + sites.w <= ssw;
-      }
-      function pB() {
-        return sites.ty + dy + sites.h <= ssh;
-      }
-      function pL() {
-        return sites.tx + dx >= 0;
-      }
-      // ------- touch movement -------
-      if (elmt != selector) {
-        isCorner = true;
-      }
-      if (elmt === corner[0] && pT() && pL()) {
-        sites.w += -dx;
-        sites.h += -dy;
-        sites.tx += dx;
-        sites.ty += dy;
-        setCss();
-      } else if (elmt === corner[1] && pT() && pR()) {
-        sites.w += dx;
-        sites.h += -dy;
-        sites.ty += dy;
-        setCss();
-      } else if (elmt === corner[2] && pR() && pB()) {
-        sites.w += dx;
-        sites.h += dy;
-        setCss();
-      } else if (elmt === corner[3] && pB() && pL()) {
-        sites.w += -dx;
-        sites.h += dy;
-        sites.tx += dx;
-        setCss();
-      } else if (elmt === mide[0] && pT()) {
-        sites.h += -dy;
-        sites.ty += dy;
-        setCss();
-      } else if (elmt === mide[1] && pR()) {
-        sites.w += dx;
-        setCss();
-      } else if (elmt === mide[2] && pB()) {
-        sites.h += dy;
-        setCss();
-      } else if (elmt === mide[3] && pL()) {
-        sites.w += -dx;
-        sites.tx += dx;
-        setCss();
-      } else if (!isCorner && pB() && pL() && pT() && pR()) {
-        sites.tx += dx;
-        sites.ty += dy;
-        setCss();
-      }
+  function _start() {
+    mouse_down = true;
+    if (i === 0) {
+      mov.l = 1;
+      mov.t = 1;
+    } else if (i === 1) {
+      mov.r = 1;
+      mov.t = 1;
+    } else if (i === 2) {
+      mov.r = 1;
+      mov.b = 1;
+    } else if (i === 3) {
+      mov.l = 1;
+      mov.b = 1;
     }
   }
-  function eEnd() {
-    if (elmt != selector) {
-      isCorner = false;
-    }
+  function _end() {
+    mouse_down = false;
+    mov.l = 0;
+    mov.r = 0;
+    mov.t = 0;
+    mov.b = 0;
   }
 });
+mLR.forEach((e, i) => {
+  hover(e);
+  e.addEventListener("touchstart", _start);
+  e.addEventListener("touchend", _end);
+  e.addEventListener("mousedown", _start);
+  e.addEventListener("mouseup", _end);
+
+  function _start() {
+    mouse_down = true;
+    if (i === 0) mov.r = 1;
+    else mov.l = 1;
+  }
+  function _end() {
+    mouse_down = false;
+    mov.r = 0;
+    mov.l = 0;
+  }
+});
+mTB.forEach((e, i) => {
+  hover(e);
+  e.addEventListener("touchstart", _start);
+  e.addEventListener("touchend", _end);
+  e.addEventListener("mousedown", _start);
+  e.addEventListener("mouseup", _end);
+
+  function _start() {
+    mouse_down = true;
+    if (i === 0) mov.t = 1;
+    else mov.b = 1;
+  }
+  function _end() {
+    mouse_down = false;
+    mov.t = 0;
+    mov.b = 0;
+  }
+});
+
+selector.addEventListener("mousedown", (e) => {
+  mouse_down = true;
+  s_start(e);
+});
+selector.addEventListener("mousemove", (e) => {
+  if (mouse_down) s_move(e);
+});
+selector.addEventListener("mouseup", () => {
+  mouse_down = false;
+});
+selector.addEventListener("mouseleave", () => {
+  mouse_down = false;
+});
+
+selector.addEventListener("touchstart", (e) => {
+  s_start({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+});
+selector.addEventListener("touchmove", (e) => {
+  s_move({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+});
+
+function s_start(e) {
+  lx = e.clientX;
+  ly = e.clientY;
+}
+function s_move(e) {
+  dx = e.clientX - lx;
+  dy = e.clientY - ly;
+  lx = e.clientX;
+  ly = e.clientY;
+
+  if (mov.t) setPrty("--t", dy, false);
+  if (mov.r) setPrty("--r", -dx, true);
+  if (mov.b) setPrty("--b", -dy, false);
+  if (mov.l) setPrty("--l", dx, true);
+
+  if (!mov.l && !mov.r && !mov.t && !mov.b) {
+    setPrty("--t", dy, false);
+    setPrty("--r", -dx, true);
+    setPrty("--b", -dy, false);
+    setPrty("--l", dx, true);
+  }
+}
 
 imgInput.addEventListener("change", (e) => {
   if (!e.target.files[0]) return;
 
+  fileNames = [];
+  fileNames.push(e.target.files[0].name);
+  mainWindow.classList.add("active");
   Img = URL.createObjectURL(e.target.files[0]);
   img.src = Img;
+
   img.onload = () => {
-    sSelector.style.display = "flex";
-    contentOther.style.display = "block";
-    let ss = sSelector.style;
-    w = img.width;
-    h = img.height;
+    let w = img.width;
+    let h = img.height;
 
     if (h > w) {
-      ratio = h / minSize;
-      nsize = w / ratio;
-      ss.backgroundSize = `${nsize}px ${minSize}px`;
-      ss.width = `${nsize}px`;
-      ss.height = `${minSize}px`;
+      ratioY = w / ratio;
+      ratio = h / ratioX;
+      root.style.setProperty("--ratioX", `${ratioY}px`);
+      root.style.setProperty("--ratioY", `${ratioX}px`);
     } else {
-      ratio = w / minSize;
-      nsize = h / ratio;
-      ss.backgroundSize = `${minSize}px ${nsize}px`;
-      ss.width = `${minSize}px`;
-      ss.height = `${nsize}px`;
+      ratio = w / ratioX;
+      ratioY = h / ratio;
+      root.style.setProperty("--ratioX", `${ratioX}px`);
+      root.style.setProperty("--ratioY", `${ratioY}px`);
     }
-    ssw = sSelector.clientWidth;
-    ssh = sSelector.clientHeight;
-    sites.w = ssw * 0.75;
-    sites.h = ssh * 0.75;
-    sites.tx = ssw * 0.125;
-    sites.ty = ssh * 0.125;
-    setCss();
-    ss.backgroundImage = `url('${Img}')`;
+    backImg.style.backgroundImage = `url('${Img}')`;
+    selectedImg.style.backgroundImage = `url('${Img}')`;
+    inputW.value = sSelector.clientWidth;
+    inputH.value = sSelector.clientHeight;
   };
 });
+
+function mkQuality(sizeInKb) {
+  let deltaW = img.width / sSelector.clientWidth;
+  let deltaH = img.height / sSelector.clientHeight;
+  let temp = selector.clientWidth / selector.clientHeight;
+
+  function mkImgPerfectSize(alpha = 1) {
+    $cvs.width = 1 * alpha * temp;
+    $cvs.height = 1 * alpha;
+
+    $ctx.clearRect(0, 0, $cvs.width, $cvs.height);
+    $ctx.drawImage(
+      img,
+      dlmov.l * deltaW,
+      dlmov.t * deltaH,
+      selector.clientWidth * deltaW,
+      selector.clientHeight * deltaH,
+      0,
+      0,
+      $cvs.width,
+      $cvs.height
+    );
+      return $ctx.canvas.toDataURL("image/jpeg", 0.1);
+  }
+
+  let alpha = 1;
+  let _i_ = mkImgPerfectSize(alpha).length / 1350; 
+
+  for (;_i_ < sizeInKb; alpha += 1000, _i_ = mkImgPerfectSize(alpha).length / 1350);
+  for (; _i_ > sizeInKb; alpha -= 200, _i_ = mkImgPerfectSize(alpha).length / 1350);
+  for (; _i_ < sizeInKb; alpha += 50, _i_ = mkImgPerfectSize(alpha).length / 1350);
+  for (; _i_ > sizeInKb; alpha -= 10, _i_ = mkImgPerfectSize(alpha).length / 1350);
+
+  return mkImgPerfectSize(alpha);
+}
 
 crapBtn.addEventListener("click", () => {
   if (!Img) return;
   preview.style.display = "flex";
-  let scaleN = Math.floor(sites.w / selectWidth),
-  cw,
-  ch;
+  newCreateImg = true;
+  imgResize.src = mkQuality(inkb);
+  let r = selector.clientWidth / selector.clientHeight; 
 
-  function maekImgPerfectSize() {
-    $$cvs.width = selectWidth;
-    scaleN = selector.clientWidth / selectWidth;
-    ch = sites.h / scaleN;
-    $$cvs.height = ch;
-    cw = selectWidth;
+  let previewImgW = selector.clientWidth;
+  let previewImgH = selector.clientHeight;
 
-    $$ctx.clearRect(0, 0, $$cvs.width, $$cvs.height);
-    $$ctx.drawImage(
-      img,
-      sites.tx * ratio,
-      sites.ty * ratio,
-      sites.w * ratio,
-      sites.h * ratio,
-      0,
-      0,
-      $$cvs.width,
-      $$cvs.height
-    );
-    return (newImgSrc = $$ctx.canvas.toDataURL(img, "image/jpeg"));
+  
+  imgResize.style.backgroundSize = `${previewImgW * 5}px ${previewImgH * 5}px`;
+  if (r < 1) {
+    imgResize.style.width = `auto`;
+    imgResize.style.height = `100%`;
+  } else { 
+    imgResize.style.width = `100%`; 
+    imgResize.style.height = `auto`;
   }
-  while (maekImgPerfectSize().length / 1000 < inkb * 1.35) {
-    selectWidth += 100;
+});
+
+downloadBtn.addEventListener("click", () => {
+  if (window.navigator.msSaveBlob) {
+    window.navigator.msSaveBlob($cvs.msToBlob("image/jpeg", 0.1), `SB~${fileNames[0]}`);
+  } else {
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.href = $cvs.toDataURL("image/jpeg", 0.1);
+    a.download = `SB~${fileNames[0]}`;
+    a.click();
+    document.body.removeChild(a);
   }
-  while (maekImgPerfectSize().length / 1000 > inkb * 1.35) {
-    selectWidth -= 10;
-  }
-
-  let scl = ch / cw;
-  imgResize.style.backgroundSize = `${minSize}px ${minSize * scl}px`;
-  imgResize.style.width = `${minSize}px`;
-  imgResize.style.height = `${minSize * scl}px`;
-
-  newCreateImg = maekImgPerfectSize();
-  imgResize.style.backgroundImage = `url(${maekImgPerfectSize()})`;
-
-  downloadBtn.addEventListener("click", () => {
-    if (window.navigator.msSaveBlob) {
-      window.navigator.msSaveBlob($$cvs.msToBlob(), "your-image.png");
-    } else {
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.href = $$cvs.toDataURL();
-      a.download = "your-image.png";
-      a.click();
-      document.body.removeChild(a);
-    }
-  });
 });
 
 iKnow.addEventListener("click", () => {
   instraction.style.display = "none";
-}); 
+});
 pvuBtn.addEventListener("click", () => {
   if (!newCreateImg) {
     instraction.style.display = "flex";
